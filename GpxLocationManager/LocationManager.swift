@@ -40,7 +40,7 @@ open class LocationManager {
     }
   }
 
-  open weak var delegate: CLLocationManagerDelegate! {
+  open weak var delegate: CLLocationManagerDelegate? {
     get {
       switch locationManagerType {
       case .gpxFile, .locations:

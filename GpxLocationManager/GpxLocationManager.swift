@@ -60,7 +60,7 @@ open class GpxLocationManager {
     }
     return locations[lastLocation]
   }
-  open weak var delegate: CLLocationManagerDelegate!
+  open weak var delegate: CLLocationManagerDelegate?
   open var shouldKill = false
   open var shouldReset = false
   open var allowsBackgroundLocationUpdates = false
@@ -81,13 +81,13 @@ open class GpxLocationManager {
 
   open func requestAlwaysAuthorization() {
     self.callerQueue.async(execute: {
-      self.delegate.locationManager?(self.dummyCLLocationManager, didChangeAuthorization: .authorizedAlways)
+      self.delegate?.locationManager?(self.dummyCLLocationManager, didChangeAuthorization: .authorizedAlways)
     })
   }
 
   open func requestWhenInUseAuthorization() {
     self.callerQueue.async(execute: {
-      self.delegate.locationManager?(self.dummyCLLocationManager, didChangeAuthorization: .authorizedWhenInUse)
+      self.delegate?.locationManager?(self.dummyCLLocationManager, didChangeAuthorization: .authorizedWhenInUse)
     })
   }
 
@@ -181,14 +181,14 @@ open class GpxLocationManager {
           if abs(timeBetweenExpectedUpdateAndNextLocation) < GpxLocationManager.dateFudge {
             if self.isUpdatingLocations {
               self.callerQueue.async(execute: {
-                self.delegate.locationManager?(self.dummyCLLocationManager, didUpdateLocations: [currentLocation])
+                self.delegate?.locationManager?(self.dummyCLLocationManager, didUpdateLocations: [currentLocation])
 
               })
             }
             if self.isUpdatingHeading {
               let heading = GpxFakedHeading(trueNorth: currentLocation.course)
               self.callerQueue.async(execute: {
-                self.delegate.locationManager?(self.dummyCLLocationManager, didUpdateHeading: heading)
+                self.delegate?.locationManager?(self.dummyCLLocationManager, didUpdateHeading: heading)
               })
             }
             if self.isMonitoringSignificantLocationChanges {
@@ -197,7 +197,7 @@ open class GpxLocationManager {
               } else {
                 self.lastDeliveredSignificantLocationUpdate = currentLocation
                 self.callerQueue.async(execute: {
-                  self.delegate.locationManager?(self.dummyCLLocationManager, didUpdateLocations: [currentLocation])
+                  self.delegate?.locationManager?(self.dummyCLLocationManager, didUpdateLocations: [currentLocation])
 
                 })
               }
@@ -207,12 +207,12 @@ open class GpxLocationManager {
                 if let circularRegion = region as? CLCircularRegion {
                   if circularRegion.contains(lastGeofencedLocation.coordinate) && !circularRegion.contains(currentLocation.coordinate) {
                     self.callerQueue.async(execute: {
-                      self.delegate.locationManager?(self.dummyCLLocationManager, didExitRegion: circularRegion)
+                      self.delegate?.locationManager?(self.dummyCLLocationManager, didExitRegion: circularRegion)
 
                     })
                   } else if !circularRegion.contains(lastGeofencedLocation.coordinate) && circularRegion.contains(currentLocation.coordinate) {
                     self.callerQueue.async(execute: {
-                      self.delegate.locationManager?(self.dummyCLLocationManager, didEnterRegion: circularRegion)
+                      self.delegate?.locationManager?(self.dummyCLLocationManager, didEnterRegion: circularRegion)
 
                     })
                   }
