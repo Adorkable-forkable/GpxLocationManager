@@ -258,6 +258,24 @@ open class LocationManager {
       fatalError("locationManagerType of this instance is .coreLocation but caller attempted to set locations.")
     }
   }
+    
+  open func startMonitoringSignificantLocationChanges() {
+    switch locationManagerType {
+    case .gpxFile, .locations:
+      gpxLocationManager.startMonitoringSignificantLocationChanges()
+    case .coreLocation:
+      cLLocationManager.startMonitoringSignificantLocationChanges()
+    }
+  }
+
+  open func startUpdatingLocation() {
+    switch locationManagerType {
+    case .gpxFile, .locations:
+      gpxLocationManager.startUpdatingLocation()
+    case .coreLocation:
+      cLLocationManager.startUpdatingLocation()
+    }
+  }
 
   open func stopUpdatingLocation() {
     switch locationManagerType {
@@ -285,22 +303,15 @@ open class LocationManager {
       cLLocationManager.disallowDeferredLocationUpdates()
     }
   }
+}
 
+extension LocationManager {
   var monitoredRegions: Set<CLRegion> {
     switch locationManagerType {
     case .gpxFile, .locations:
         return gpxLocationManager.monitoredRegions
     case .coreLocation:
         return cLLocationManager.monitoredRegions
-    }
-  }
-
-  open func stopMonitoring(for region: CLRegion) {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.stopMonitoring(for: region)
-    case .coreLocation:
-      cLLocationManager.stopMonitoring(for: region)
     }
   }
 
@@ -313,21 +324,12 @@ open class LocationManager {
     }
   }
 
-  open func startMonitoringSignificantLocationChanges() {
+  open func stopMonitoring(for region: CLRegion) {
     switch locationManagerType {
     case .gpxFile, .locations:
-      gpxLocationManager.startMonitoringSignificantLocationChanges()
+      gpxLocationManager.stopMonitoring(for: region)
     case .coreLocation:
-      cLLocationManager.startMonitoringSignificantLocationChanges()
-    }
-  }
-
-  open func startUpdatingLocation() {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.startUpdatingLocation()
-    case .coreLocation:
-      cLLocationManager.startUpdatingLocation()
+      cLLocationManager.stopMonitoring(for: region)
     }
   }
 }
