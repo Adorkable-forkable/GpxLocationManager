@@ -200,7 +200,25 @@ open class LocationManager {
     }
   }
 
-  open let locationManagerType: LocationManagerType
+  public let locationManagerType: LocationManagerType
+
+  public func getInternalLocationManager() -> GpxLocationManager? {
+    switch locationManagerType {
+    case .gpxFile, .locations:
+        return self.gpxLocationManager
+    case .coreLocation:
+        return nil
+    }
+  }
+
+  public func getInternalLocationManager() -> CLLocationManager? {
+    switch locationManagerType {
+    case .gpxFile, .locations:
+      return nil
+    case .coreLocation:
+      return self.cLLocationManager
+    }
+  }
 
   public init(type: LocationManagerType) {
     locationManagerType = type
