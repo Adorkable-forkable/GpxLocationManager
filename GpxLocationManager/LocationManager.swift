@@ -31,7 +31,7 @@ open class LocationManager {
     }
   }
 
-  open var location: CLLocation! {
+  open var location: CLLocation? {
     switch locationManagerType {
     case .gpxFile, .locations:
         return gpxLocationManager.location

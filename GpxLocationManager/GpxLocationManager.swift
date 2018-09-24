@@ -54,7 +54,12 @@ open class GpxLocationManager {
   open class func headingAvailable() -> Bool { return true }
   open class func isMonitoringAvailableForClass(_ regionClass: AnyClass! = nil) -> Bool { return true }
   open class func isRangingAvailable() -> Bool { return true }
-  open var location: CLLocation! { return locations[lastLocation] }
+  open var location: CLLocation? {
+    guard lastLocation < locations.count else {
+        return nil
+    }
+    return locations[lastLocation]
+  }
   open weak var delegate: CLLocationManagerDelegate!
   open var shouldKill = false
   open var shouldReset = false
