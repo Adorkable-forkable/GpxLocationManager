@@ -41,33 +41,33 @@ open class LocationManager {
   }
 
   open func authorizationStatus() -> CLAuthorizationStatus {
-    return self.on(gpx: { (_) in
+    return self.on(gpx: { _ in
         return GpxLocationManager.authorizationStatus()
-    }, core: { (_) in
+    }, core: { _ in
         return CLLocationManager.authorizationStatus()
     })
   }
 
   open var location: CLLocation? {
-    return self.on(gpx: { (manager) in
+    return self.on(gpx: { manager in
         return manager.location
-    }, core: { (manager) in
+    }, core: { manager in
         return manager.location
     })
   }
 
   open weak var delegate: CLLocationManagerDelegate? {
     get {
-      return self.on(gpx: { (manager) in
+      return self.on(gpx: { manager in
         return manager.delegate
-      }, core: { (manager) in
+      }, core: { manager in
         return manager.delegate
       })
     }
     set {
-      self.on(gpx: { (manager) in
+      self.on(gpx: { manager in
         manager.delegate = newValue
-      }, core: { (manager) in
+      }, core: { manager in
         manager.delegate = newValue
       })
     }
@@ -75,16 +75,16 @@ open class LocationManager {
 
   open var desiredAccuracy: CLLocationAccuracy {
     get {
-      return self.on(gpx: { (manager) in
+      return self.on(gpx: { manager in
         return manager.desiredAccuracy
-      }, core: { (manager) in
+      }, core: { manager in
         return manager.desiredAccuracy
       })
     }
     set {
-      self.on(gpx: { (manager) in
+      self.on(gpx: { manager in
         manager.desiredAccuracy = newValue
-      }, core: { (manager) in
+      }, core: { manager in
         manager.desiredAccuracy = newValue
       })
     }
@@ -92,16 +92,16 @@ open class LocationManager {
 
   open var activityType: CLActivityType {
     get {
-      return self.on(gpx: { (manager) in
+      return self.on(gpx: { manager in
         return manager.activityType
-      }, core: { (manager) in
+      }, core: { manager in
         return manager.activityType
       })
     }
     set {
-      self.on(gpx: { (manager) in
+      self.on(gpx: { manager in
         manager.activityType = newValue
-      }, core: { (manager) in
+      }, core: { manager in
         manager.activityType = newValue
       })
     }
@@ -109,16 +109,16 @@ open class LocationManager {
 
   open var distanceFilter: CLLocationDistance {
     get {
-      return self.on(gpx: { (manager) in
+      return self.on(gpx: { manager in
         return manager.distanceFilter
-      }, core: { (manager) in
+      }, core: { manager in
         return manager.distanceFilter
       })
     }
     set {
-      self.on(gpx: { (manager) in
+      self.on(gpx: { manager in
         manager.distanceFilter = newValue
-      }, core: { (manager) in
+      }, core: { manager in
         manager.distanceFilter = newValue
       })
     }
@@ -126,16 +126,16 @@ open class LocationManager {
 
   open var pausesLocationUpdatesAutomatically: Bool {
     get {
-      return self.on(gpx: { (manager) in
+      return self.on(gpx: { manager in
         return manager.pausesLocationUpdatesAutomatically
-      }, core: { (manager) in
+      }, core: { manager in
         return manager.pausesLocationUpdatesAutomatically
       })
     }
     set {
-      self.on(gpx: { (manager) in
+      self.on(gpx: { manager in
         manager.pausesLocationUpdatesAutomatically = newValue
-      }, core: { (manager) in
+      }, core: { manager in
         manager.pausesLocationUpdatesAutomatically = newValue
       })
     }
@@ -143,54 +143,54 @@ open class LocationManager {
 
   open var allowsBackgroundLocationUpdates: Bool {
     get {
-      return self.on(gpx: { (manager) in
+      return self.on(gpx: { manager in
         return manager.allowsBackgroundLocationUpdates
-      }, core: { (manager) in
+      }, core: { manager in
         return manager.allowsBackgroundLocationUpdates
       })
     }
     set {
-      self.on(gpx: { (manager) in
+      self.on(gpx: { manager in
         manager.allowsBackgroundLocationUpdates = newValue
-      }, core: { (manager) in
+      }, core: { manager in
         manager.allowsBackgroundLocationUpdates = newValue
       })
     }
   }
 
   open func requestAlwaysAuthorization() {
-    self.on(gpx: { (manager) in
+    self.on(gpx: { manager in
       manager.requestAlwaysAuthorization()
-    }, core: { (manager) in
+    }, core: { manager in
       manager.requestAlwaysAuthorization()
     })
   }
 
   open func requestWhenInUseAuthorization() {
-    self.on(gpx: { (manager) in
+    self.on(gpx: { manager in
       manager.requestWhenInUseAuthorization()
-    }, core: { (manager) in
+    }, core: { manager in
       manager.requestWhenInUseAuthorization()
     })
   }
 
   open var secondLength: Double {
     get {
-      return self.on(gpx: { (manager) in
+      return self.on(gpx: { manager in
         return manager.secondLength
-      }, core: { (_) in
+      }, core: { _ in
         return 1.0
       })
     }
     set {
-      self.on(gpx: { (manager) in
+      self.on(gpx: { manager in
         manager.secondLength = newValue
       }, core: nil)
     }
   }
 
   open func kill() {
-    self.on(gpx: { (manager) in
+    self.on(gpx: { manager in
       manager.kill()
     }, core: nil)
   }
@@ -198,17 +198,17 @@ open class LocationManager {
   public let locationManagerType: LocationManagerType
 
   public func getInternalLocationManager() -> GpxLocationManager? {
-    return self.on(gpx: { (manager) in
+    return self.on(gpx: { manager in
       return manager
-    }, core: { (_) in
+    }, core: { _ in
       return nil
     })
   }
 
   public func getInternalLocationManager() -> CLLocationManager? {
-    return self.on(gpx: { (_) in
+    return self.on(gpx: { _ in
       return nil
-    }, core: { (manager) in
+    }, core: { manager in
       return manager
     })
   }
@@ -246,9 +246,9 @@ extension LocationManager {
   }
 
   public func setLocations(locations: [CLLocation]) {
-    self.on(gpx: { (manager) in
+    self.on(gpx: { manager in
       manager.setLocations(locations: locations)
-    }, core: { (_) in
+    }, core: { _ in
       fatalError("locationManagerType of this instance is .coreLocation but caller attempted to set locations.")
     })
   }
@@ -256,41 +256,41 @@ extension LocationManager {
 
 extension LocationManager {
   open func startMonitoringSignificantLocationChanges() {
-    self.on(gpx: { (manager) in
+    self.on(gpx: { manager in
       manager.startMonitoringSignificantLocationChanges()
-    }, core: { (manager) in
+    }, core: { manager in
       manager.startMonitoringSignificantLocationChanges()
     })
   }
 
   open func startUpdatingLocation() {
-    self.on(gpx: { (manager) in
+    self.on(gpx: { manager in
       manager.startUpdatingLocation()
-    }, core: { (manager) in
+    }, core: { manager in
       manager.startUpdatingLocation()
     })
   }
 
   open func stopUpdatingLocation() {
-    self.on(gpx: { (manager) in
+    self.on(gpx: { manager in
       manager.stopUpdatingLocation()
-    }, core: { (manager) in
+    }, core: { manager in
       manager.stopUpdatingLocation()
     })
   }
 
   open func allowDeferredLocationUpdates(untilTraveled distance: CLLocationDistance, timeout: TimeInterval) {
-    self.on(gpx: { (manager) in
+    self.on(gpx: { manager in
       manager.allowDeferredLocationUpdates(untilTraveled: distance, timeout: timeout)
-    }, core: { (manager) in
+    }, core: { manager in
       manager.allowDeferredLocationUpdates(untilTraveled: distance, timeout: timeout)
     })
   }
 
   open func disallowDeferredLocationUpdates() {
-    self.on(gpx: { (manager) in
+    self.on(gpx: { manager in
       manager.disallowDeferredLocationUpdates()
-    }, core: { (manager) in
+    }, core: { manager in
       manager.disallowDeferredLocationUpdates()
     })
   }
@@ -298,25 +298,25 @@ extension LocationManager {
 
 extension LocationManager {
   var monitoredRegions: Set<CLRegion> {
-    return self.on(gpx: { (manager) in
+    return self.on(gpx: { manager in
       return manager.monitoredRegions
-    }, core: { (manager) in
+    }, core: { manager in
       return manager.monitoredRegions
     })
   }
 
   open func startMonitoring(for region: CLRegion) {
-    self.on(gpx: { (manager) in
+    self.on(gpx: { manager in
       manager.startMonitoring(for: region)
-    }, core: { (manager) in
+    }, core: { manager in
       manager.startMonitoring(for: region)
     })
   }
 
   open func stopMonitoring(for region: CLRegion) {
-    self.on(gpx: { (manager) in
+    self.on(gpx: { manager in
       manager.stopMonitoring(for: region)
-    }, core: { (manager) in
+    }, core: { manager in
       manager.stopMonitoring(for: region)
     })
   }
@@ -324,25 +324,25 @@ extension LocationManager {
 
 extension LocationManager {
   open var heading: CLHeading? {
-    return self.on(gpx: { (manager) in
+    return self.on(gpx: { manager in
       return manager.heading
-    }, core: { (manager) in
+    }, core: { manager in
       return manager.heading
     })
   }
 
   open func startUpdatingHeading() {
-    self.on(gpx: { (manager) in
+    self.on(gpx: { manager in
       manager.startUpdatingHeading()
-    }, core: { (manager) in
+    }, core: { manager in
       manager.startUpdatingHeading()
     })
   }
 
   open func stopUpdatingHeading() {
-    self.on(gpx: { (manager) in
+    self.on(gpx: { manager in
       manager.stopUpdatingHeading()
-    }, core: { (manager) in
+    }, core: { manager in
       manager.stopUpdatingHeading()
     })
   }
