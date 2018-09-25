@@ -22,185 +22,196 @@ open class LocationManager {
     }
   }
 
+  internal func on<Result>(gpx: (GpxLocationManager) -> Result, core: (CLLocationManager) -> Result) -> Result {
+    switch locationManagerType {
+    case .gpxFile, .locations:
+        return gpx(self.gpxLocationManager)
+    case .coreLocation:
+        return core(self.cLLocationManager)
+    }
+  }
+
+  internal func on(gpx: ((GpxLocationManager) -> Void)?, core: ((CLLocationManager) -> Void)?) {
+    switch locationManagerType {
+    case .gpxFile, .locations:
+        gpx?(self.gpxLocationManager)
+    case .coreLocation:
+        core?(self.cLLocationManager)
+    }
+  }
+
   open func authorizationStatus() -> CLAuthorizationStatus {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      return GpxLocationManager.authorizationStatus()
-    case .coreLocation:
-      return CLLocationManager.authorizationStatus()
-    }
+    return self.on(gpx: { _ in
+        return GpxLocationManager.authorizationStatus()
+    }, core: { _ in
+        return CLLocationManager.authorizationStatus()
+    })
   }
 
-  open var location: CLLocation! {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-        return gpxLocationManager.location
-    case .coreLocation:
-        return cLLocationManager.location
-    }
+  open var location: CLLocation? {
+    return self.on(gpx: { manager in
+        return manager.location
+    }, core: { manager in
+        return manager.location
+    })
   }
 
-  open weak var delegate: CLLocationManagerDelegate! {
+  open weak var delegate: CLLocationManagerDelegate? {
     get {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        return gpxLocationManager.delegate
-      case .coreLocation:
-        return cLLocationManager.delegate
-      }
+      return self.on(gpx: { manager in
+        return manager.delegate
+      }, core: { manager in
+        return manager.delegate
+      })
     }
     set {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        gpxLocationManager.delegate = newValue
-      case .coreLocation:
-        cLLocationManager.delegate = newValue
-      }
+      self.on(gpx: { manager in
+        manager.delegate = newValue
+      }, core: { manager in
+        manager.delegate = newValue
+      })
     }
   }
 
   open var desiredAccuracy: CLLocationAccuracy {
     get {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        return gpxLocationManager.desiredAccuracy
-      case .coreLocation:
-        return cLLocationManager.desiredAccuracy
-      }
+      return self.on(gpx: { manager in
+        return manager.desiredAccuracy
+      }, core: { manager in
+        return manager.desiredAccuracy
+      })
     }
     set {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        gpxLocationManager.desiredAccuracy = newValue
-      case .coreLocation:
-        cLLocationManager.desiredAccuracy = newValue
-      }
+      self.on(gpx: { manager in
+        manager.desiredAccuracy = newValue
+      }, core: { manager in
+        manager.desiredAccuracy = newValue
+      })
     }
   }
 
   open var activityType: CLActivityType {
     get {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        return gpxLocationManager.activityType
-      case .coreLocation:
-        return cLLocationManager.activityType
-      }
+      return self.on(gpx: { manager in
+        return manager.activityType
+      }, core: { manager in
+        return manager.activityType
+      })
     }
     set {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        gpxLocationManager.activityType = newValue
-      case .coreLocation:
-        cLLocationManager.activityType = newValue
-      }
+      self.on(gpx: { manager in
+        manager.activityType = newValue
+      }, core: { manager in
+        manager.activityType = newValue
+      })
     }
   }
 
   open var distanceFilter: CLLocationDistance {
     get {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        return gpxLocationManager.distanceFilter
-      case .coreLocation:
-        return cLLocationManager.distanceFilter
-      }
+      return self.on(gpx: { manager in
+        return manager.distanceFilter
+      }, core: { manager in
+        return manager.distanceFilter
+      })
     }
     set {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        gpxLocationManager.distanceFilter = newValue
-      case .coreLocation:
-        cLLocationManager.distanceFilter = newValue
-      }
+      self.on(gpx: { manager in
+        manager.distanceFilter = newValue
+      }, core: { manager in
+        manager.distanceFilter = newValue
+      })
     }
   }
 
   open var pausesLocationUpdatesAutomatically: Bool {
     get {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        return gpxLocationManager.pausesLocationUpdatesAutomatically
-      case .coreLocation:
-        return cLLocationManager.pausesLocationUpdatesAutomatically
-      }
+      return self.on(gpx: { manager in
+        return manager.pausesLocationUpdatesAutomatically
+      }, core: { manager in
+        return manager.pausesLocationUpdatesAutomatically
+      })
     }
     set {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        gpxLocationManager.pausesLocationUpdatesAutomatically = newValue
-      case .coreLocation:
-        cLLocationManager.pausesLocationUpdatesAutomatically = newValue
-      }
+      self.on(gpx: { manager in
+        manager.pausesLocationUpdatesAutomatically = newValue
+      }, core: { manager in
+        manager.pausesLocationUpdatesAutomatically = newValue
+      })
     }
   }
 
   open var allowsBackgroundLocationUpdates: Bool {
     get {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        return gpxLocationManager.allowsBackgroundLocationUpdates
-      case .coreLocation:
-        return cLLocationManager.allowsBackgroundLocationUpdates
-      }
+      return self.on(gpx: { manager in
+        return manager.allowsBackgroundLocationUpdates
+      }, core: { manager in
+        return manager.allowsBackgroundLocationUpdates
+      })
     }
     set {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        gpxLocationManager.allowsBackgroundLocationUpdates = newValue
-      case .coreLocation:
-        cLLocationManager.allowsBackgroundLocationUpdates = newValue
-      }
+      self.on(gpx: { manager in
+        manager.allowsBackgroundLocationUpdates = newValue
+      }, core: { manager in
+        manager.allowsBackgroundLocationUpdates = newValue
+      })
     }
   }
 
   open func requestAlwaysAuthorization() {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.requestAlwaysAuthorization()
-    case .coreLocation:
-      cLLocationManager.requestAlwaysAuthorization()
-    }
+    self.on(gpx: { manager in
+      manager.requestAlwaysAuthorization()
+    }, core: { manager in
+      manager.requestAlwaysAuthorization()
+    })
   }
 
   open func requestWhenInUseAuthorization() {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.requestWhenInUseAuthorization()
-    case .coreLocation:
-      cLLocationManager.requestWhenInUseAuthorization()
-    }
+    self.on(gpx: { manager in
+      manager.requestWhenInUseAuthorization()
+    }, core: { manager in
+      manager.requestWhenInUseAuthorization()
+    })
   }
 
   open var secondLength: Double {
     get {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        return gpxLocationManager.secondLength
-      case .coreLocation:
+      return self.on(gpx: { manager in
+        return manager.secondLength
+      }, core: { _ in
         return 1.0
-      }
+      })
     }
     set {
-      switch locationManagerType {
-      case .gpxFile, .locations:
-        gpxLocationManager.secondLength = newValue
-      case .coreLocation:
-        break
-      }
+      self.on(gpx: { manager in
+        manager.secondLength = newValue
+      }, core: nil)
     }
   }
 
   open func kill() {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.kill()
-    case .coreLocation:
-      break
-    }
+    self.on(gpx: { manager in
+      manager.kill()
+    }, core: nil)
   }
 
-  open let locationManagerType: LocationManagerType
+  public let locationManagerType: LocationManagerType
+
+  public func getInternalLocationManager() -> GpxLocationManager? {
+    return self.on(gpx: { manager in
+      return manager
+    }, core: { _ in
+      return nil
+    })
+  }
+
+  public func getInternalLocationManager() -> CLLocationManager? {
+    return self.on(gpx: { _ in
+      return nil
+    }, core: { manager in
+      return manager
+    })
+  }
 
   public init(type: LocationManagerType) {
     locationManagerType = type
@@ -220,7 +231,9 @@ open class LocationManager {
     locationManagerType = .coreLocation
     cLLocationManager = CLLocationManager()
   }
+}
 
+extension LocationManager {
   public func setLocations(gpxFile: String) {
     switch locationManagerType {
     case .gpxFile:
@@ -233,112 +246,104 @@ open class LocationManager {
   }
 
   public func setLocations(locations: [CLLocation]) {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.setLocations(locations: locations)
-    case .coreLocation:
+    self.on(gpx: { manager in
+      manager.setLocations(locations: locations)
+    }, core: { _ in
       fatalError("locationManagerType of this instance is .coreLocation but caller attempted to set locations.")
-    }
+    })
   }
+}
 
-  open func stopUpdatingLocation() {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.stopUpdatingLocation()
-    case .coreLocation:
-      cLLocationManager.stopUpdatingLocation()
-    }
-  }
-
-  open func allowDeferredLocationUpdates(untilTraveled distance: CLLocationDistance, timeout: TimeInterval) {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.allowDeferredLocationUpdates(untilTraveled: distance, timeout: timeout)
-    case .coreLocation:
-      cLLocationManager.allowDeferredLocationUpdates(untilTraveled: distance, timeout: timeout)
-    }
-  }
-
-  open func disallowDeferredLocationUpdates() {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.disallowDeferredLocationUpdates()
-    case .coreLocation:
-      cLLocationManager.disallowDeferredLocationUpdates()
-    }
-  }
-
-  var monitoredRegions: Set<CLRegion> {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-        return gpxLocationManager.monitoredRegions
-    case .coreLocation:
-        return cLLocationManager.monitoredRegions
-    }
-  }
-
-  open func stopMonitoring(for region: CLRegion) {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.stopMonitoring(for: region)
-    case .coreLocation:
-      cLLocationManager.stopMonitoring(for: region)
-    }
-  }
-
-  open func startMonitoring(for region: CLRegion) {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.startMonitoring(for: region)
-    case .coreLocation:
-      cLLocationManager.startMonitoring(for: region)
-    }
-  }
-
+extension LocationManager {
   open func startMonitoringSignificantLocationChanges() {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.startMonitoringSignificantLocationChanges()
-    case .coreLocation:
-      cLLocationManager.startMonitoringSignificantLocationChanges()
-    }
+    self.on(gpx: { manager in
+      manager.startMonitoringSignificantLocationChanges()
+    }, core: { manager in
+      manager.startMonitoringSignificantLocationChanges()
+    })
   }
 
   open func startUpdatingLocation() {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.startUpdatingLocation()
-    case .coreLocation:
-      cLLocationManager.startUpdatingLocation()
-    }
+    self.on(gpx: { manager in
+      manager.startUpdatingLocation()
+    }, core: { manager in
+      manager.startUpdatingLocation()
+    })
+  }
+
+  open func stopUpdatingLocation() {
+    self.on(gpx: { manager in
+      manager.stopUpdatingLocation()
+    }, core: { manager in
+      manager.stopUpdatingLocation()
+    })
+  }
+
+  open func allowDeferredLocationUpdates(untilTraveled distance: CLLocationDistance, timeout: TimeInterval) {
+    self.on(gpx: { manager in
+      manager.allowDeferredLocationUpdates(untilTraveled: distance, timeout: timeout)
+    }, core: { manager in
+      manager.allowDeferredLocationUpdates(untilTraveled: distance, timeout: timeout)
+    })
+  }
+
+  open func disallowDeferredLocationUpdates() {
+    self.on(gpx: { manager in
+      manager.disallowDeferredLocationUpdates()
+    }, core: { manager in
+      manager.disallowDeferredLocationUpdates()
+    })
+  }
+}
+
+extension LocationManager {
+  var monitoredRegions: Set<CLRegion> {
+    return self.on(gpx: { manager in
+      return manager.monitoredRegions
+    }, core: { manager in
+      return manager.monitoredRegions
+    })
+  }
+
+  open func startMonitoring(for region: CLRegion) {
+    self.on(gpx: { manager in
+      manager.startMonitoring(for: region)
+    }, core: { manager in
+      manager.startMonitoring(for: region)
+    })
+  }
+
+  open func stopMonitoring(for region: CLRegion) {
+    self.on(gpx: { manager in
+      manager.stopMonitoring(for: region)
+    }, core: { manager in
+      manager.stopMonitoring(for: region)
+    })
   }
 }
 
 extension LocationManager {
   open var heading: CLHeading? {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      return gpxLocationManager.heading
-    case .coreLocation:
-      return cLLocationManager.heading
-    }
+    return self.on(gpx: { manager in
+      return manager.heading
+    }, core: { manager in
+      return manager.heading
+    })
   }
 
   open func startUpdatingHeading() {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.startUpdatingHeading()
-    case .coreLocation:
-      cLLocationManager.startUpdatingHeading()
-    }
+    self.on(gpx: { manager in
+      manager.startUpdatingHeading()
+    }, core: { manager in
+      manager.startUpdatingHeading()
+    })
   }
 
   open func stopUpdatingHeading() {
-    switch locationManagerType {
-    case .gpxFile, .locations:
-      gpxLocationManager.stopUpdatingHeading()
-    case .coreLocation:
-      cLLocationManager.stopUpdatingHeading()
-    }
+    self.on(gpx: { manager in
+      manager.stopUpdatingHeading()
+    }, core: { manager in
+      manager.stopUpdatingHeading()
+    })
   }
 }

@@ -37,8 +37,8 @@ class DemoViewController: UIViewController, CLLocationManagerDelegate {
   private let regionSize: CLLocationDistance = 500.0
   private let distanceFilter: CLLocationDistance = 10.0
 
-  var demoView: DemoView {
-    return view as! DemoView
+  var demoView: DemoView? {
+    return view as? DemoView
   }
 
   override func loadView() {
@@ -55,14 +55,14 @@ class DemoViewController: UIViewController, CLLocationManagerDelegate {
   }
 
   private func startGpxFileDemo() {
-    demoView.enableSpeedControls()
+    demoView?.enableSpeedControls()
     let locationManager =  LocationManager(type: .gpxFile(gpxFile1))
     startUpdatingLocation(newLocationManager: locationManager)
     startUpdatingHeading(newLocationManager: locationManager)
   }
 
   private func startLocationsDemo() {
-    demoView.enableSpeedControls()
+    demoView?.enableSpeedControls()
     if let parser = GpxParser(file: gpxFile2) {
       let (_, locations) = parser.parse()
       let locationManager =  LocationManager(type: .locations(locations))
@@ -72,7 +72,7 @@ class DemoViewController: UIViewController, CLLocationManagerDelegate {
   }
 
   private func startCoreLocationDemo() {
-    demoView.disableSpeedControls()
+    demoView?.disableSpeedControls()
     let coreLocationManager = LocationManager(type: .coreLocation)
     coreLocationManager.desiredAccuracy = kCLLocationAccuracyBest
     coreLocationManager.activityType = .fitness
@@ -111,11 +111,15 @@ class DemoViewController: UIViewController, CLLocationManagerDelegate {
   @objc func stepperValueChanged(_ sender: UIStepper) {
     currentSpeed = sender.value
     currentLocationManager?.secondLength = 1.0 / currentSpeed
-    demoView.speedLabel.text = "\(Int(currentSpeed))X"
-    demoView.updateSpeedLabel(speed: currentSpeed)
+    demoView?.speedLabel.text = "\(Int(currentSpeed))X"
+    demoView?.updateSpeedLabel(speed: currentSpeed)
   }
 
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    guard let demoView = self.demoView else {
+        print("Unable to handle location updates, cannot find demoView")
+        return
+    }
     demoView.mapView.setRegion(MKCoordinateRegionMakeWithDistance(locations[0].coordinate, regionSize, regionSize), animated: true)
     demoView.mapView.removeAnnotations(demoView.mapView.annotations)
     let pin = MKPointAnnotation()
@@ -127,6 +131,6 @@ class DemoViewController: UIViewController, CLLocationManagerDelegate {
 
   func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
     currentHeading = newHeading.trueHeading
-    demoView.updateHeadingLabel(heading: currentHeading)
+    demoView?.updateHeadingLabel(heading: currentHeading)
   }
 }

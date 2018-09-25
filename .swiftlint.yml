@@ -1,5 +1,4 @@
 disabled_rules: # rule identifiers to exclude from running
-  - force_cast
   - statement_position
   - function_parameter_count
   - valid_docs
